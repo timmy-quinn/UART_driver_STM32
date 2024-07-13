@@ -7,8 +7,8 @@ endif
 SRC_DIR        	= src
 INC_DIR        	= inc
 OPENCM3_DIR    	= ../libopencm3
-SHARED_SRC_DIR 	= ../shared/src
-SHARED_INC_DIR 	= ../shared/inc
+SRC_DIR 	= ../shared/src
+INC_DIR 	= ../shared/inc
 CMSIS_DIR		= CMSIS
 
 BINARY = main
@@ -31,9 +31,7 @@ LDFLAGS		+= -L$(OPENCM3_DIR)/lib
 ###############################################################################
 # Includes
 
-DEFS		+= -I$(OPENCM3_DIR)/include
 DEFS		+= -I$(INC_DIR)
-DEFS		+= -I$(SHARED_INC_DIR)
 DEFS		+= -I$(CMSIS_DIR)
 
 ###############################################################################
@@ -121,11 +119,11 @@ GENERATED_BINARIES=$(BINARY).elf $(BINARY).bin $(BINARY).hex $(BINARY).srec $(BI
 images: $(BINARY).images
 flash: $(BINARY).flash
 
-$(OPENCM3_DIR)/lib/lib$(LIBNAME).a:
-ifeq (,$(wildcard $@))
-	$(warning $(LIBNAME).a not found, attempting to rebuild in $(OPENCM3_DIR))
-	$(MAKE) -C $(OPENCM3_DIR)
-endif
+# $(OPENCM3_DIR)/lib/lib$(LIBNAME).a:
+# ifeq (,$(wildcard $@))
+# 	$(warning $(LIBNAME).a not found, attempting to rebuild in $(OPENCM3_DIR))
+# 	$(MAKE) -C $(OPENCM3_DIR)
+# endif
 
 # Define a helper macro for debugging make errors online
 # you can type "make print-OPENCM3_DIR" and it will show you
@@ -135,46 +133,46 @@ print-%:
 	@echo $*=$($*)
 
 %.images: %.bin %.hex %.srec %.list %.map
-	@#printf "*** $* images generated ***\n"
+	@echo "*** $* images generated ***\n"
 
 %.bin: %.elf
-	@#printf "  OBJCOPY $(*).bin\n"
+	@echo "  OBJCOPY $(*).bin\n"
 	$(Q)$(OBJCOPY) -Obinary $(*).elf $(*).bin
 
 %.hex: %.elf
-	@#printf "  OBJCOPY $(*).hex\n"
+	@echo "  OBJCOPY $(*).hex\n"
 	$(Q)$(OBJCOPY) -Oihex $(*).elf $(*).hex
 
 %.srec: %.elf
-	@#printf "  OBJCOPY $(*).srec\n"
+	@echo "  OBJCOPY $(*).srec\n"
 	$(Q)$(OBJCOPY) -Osrec $(*).elf $(*).srec
 
 %.list: %.elf
-	@#printf "  OBJDUMP $(*).list\n"
+	@echo "  OBJDUMP $(*).list\n"
 	$(Q)$(OBJDUMP) -S $(*).elf > $(*).list
 
 %.elf %.map: $(OBJS) $(LDSCRIPT) $(OPENCM3_DIR)/lib/lib$(LIBNAME).a Makefile
-	@#printf "  LD      $(*).elf\n"
+	@echo"  LD      $(*).elf\n"
 	$(Q)$(LD) $(TGT_LDFLAGS) $(LDFLAGS) $(OBJS) $(LDLIBS) -o $(*).elf
 
 %.o: %.c
-	@#printf "  CC      $(*).c\n"
+	@echo "  CC      $(*).c\n"
 	$(Q)$(CC) $(TGT_CFLAGS) $(CFLAGS) $(TGT_CPPFLAGS) $(CPPFLAGS) -o $(*).o -c $(*).c
 
 %.o: %.S
-	@#printf "  CC      $(*).S\n"
+	@echo"  CC      $(*).S\n"
 	$(Q)$(CC) $(TGT_CFLAGS) $(CFLAGS) -o $(*).o -c $(*).S
 
 %.o: %.cxx
-	@#printf "  CXX     $(*).cxx\n"
+	@echo "  CXX     $(*).cxx\n"
 	$(Q)$(CXX) $(TGT_CXXFLAGS) $(CXXFLAGS) $(TGT_CPPFLAGS) $(CPPFLAGS) -o $(*).o -c $(*).cxx
 
 %.o: %.cpp
-	@#printf "  CXX     $(*).cpp\n"
+	@echo "  CXX     $(*).cpp\n"
 	$(Q)$(CXX) $(TGT_CXXFLAGS) $(CXXFLAGS) $(TGT_CPPFLAGS) $(CPPFLAGS) -o $(*).o -c $(*).cpp
 
 clean:
-	@#printf "  CLEAN\n"
+	@echo "  CLEAN\n"
 	$(Q)$(RM) $(GENERATED_BINARIES) generated.* $(OBJS) $(OBJS:%.o=%.d)
 
 

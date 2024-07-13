@@ -1,5 +1,8 @@
-#include <stdint.h>
+//#include <stdint.h>
 
-int main(void) {
-    return 2; 
+volatile char variable = 'c'; 
+
+int main(void) { 
+    char h  = 'h'; 
+    variable = h; 
 }
