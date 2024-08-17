@@ -16,7 +16,7 @@
 
 //Sets the symbol vtable to type object
 //There are multiple syntaxes supported, including #, @, and %
-.type vtable %object 
+.type vtable, %object 
 vtable:
 	.word _estack
 	.word reset_handler
