@@ -1,5 +1,8 @@
 #include <stdint.h>
 
 int main(void) {
-    return 2; 
+	int val = 0;
+	while(1) {
+		val++;
+	}
 }
