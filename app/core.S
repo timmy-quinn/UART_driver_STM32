@@ -51,7 +51,7 @@ reset_handler:
 	reset_bss:
 		// Store a 0 and increment by a word
 		STR r0, [r1]
-		ADDS r1, r1, #4\
+		ADDS r1, r1, #4
 	reset_bss_loop:
 		// We'll use r1 to count progress here. 
 		// reset the next word and increment
