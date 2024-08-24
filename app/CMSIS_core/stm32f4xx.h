@@ -2041,7 +2041,7 @@ typedef struct
 #else /* STM32F411xE || STM32F410xx || STM32F412xG */
 #endif /* STM32F40_41xxx || STM32F427_437xx || STM32F429_439xx ||  STM32F446xx */
 #define PERIPH_BASE           ((uint32_t)0x40000000) /*!< Peripheral base address in the alias region                                */
-#if defined (STM32F40_41xxx) || (STM32F427_437xx) || (STM32F429_439xx) || (STM32F410xx) || (STM32F412xG) || (STM32F413_423xx) || (STM32F446xx) || (STM32F469_479xx)
+#if defined (STM32F40_41xxx) || defined(STM32F427_437xx) || defined(STM32F429_439xx) || defined(STM32F410xx) || defined(STM32F412xG) || defined(STM32F413_423xx) || defined(STM32F446xx) || defined(STM32F469_479xx)
 #define BKPSRAM_BASE          ((uint32_t)0x40024000) /*!< Backup SRAM(4 KB) base address in the alias region                         */
 #endif /* STM32F40_41xxx || (STM32F427_437xx || STM32F429_439xx || STM32F410xx || STM32F412xG || STM32F413_423xx || STM32F446xx || STM32F469_479xx */
       

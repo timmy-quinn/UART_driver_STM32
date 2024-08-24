@@ -14,8 +14,10 @@ void setLED(){
     // SET GPIOAEN to 1
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
     // Set GPIOA_MODER to output
-    GPIOA->MODER |= GPIO_MODER_MODER5; // Set the gpio pin to output
-    GPIOA->OTYPER |= GPIO_OTYPER_OT_5; // Set the gpio pin output to high
+    GPIOA->MODER |= GPIO_MODER_MODER5_0; // Set the gpio pin to output
+    GPIOA->MODER &= ~GPIO_MODER_MODER5_1; 
+                                       //
+    GPIOA->OTYPER |= ~GPIO_OTYPER_OT_5; // Set the output type to pull-up, pull down 
 }
 
 void toggle_LED() {
@@ -23,15 +25,16 @@ void toggle_LED() {
 }
 
 int main(void) {
-    uint16_t timer = 0;
+    uint32_t timer = 0;
     setLED();
+    toggle_LED();
     while(1){
         // set GPIOA_ODR to output
-        if(timer == 10000)
+        if(timer == 10000000)
         {
             toggle_LED();
-            i = 0;
+            timer = 0;
         }
-        i++; 
+        timer++; 
     }
 }
