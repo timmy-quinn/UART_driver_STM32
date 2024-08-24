@@ -3,6 +3,8 @@ TARGET = main
 LD_SCRIPT = linker.ld
 MCU_SPEC  = cortex-m4
 
+BUILDDIR = ./build #TODO: Add build directory
+
 # Toolchain definitions (ARM bare metal defaults)
 TOOLCHAIN = ~/toolchains
 CC = arm-none-eabi-gcc
@@ -50,6 +52,9 @@ C_SRC    = ./main.c
 OBJS =  $(VECT_TBL:.S=.o)
 OBJS += $(AS_SRC:.S=.o)
 OBJS += $(C_SRC:.c=.o)
+
+INCLUDE = -I./
+INCLUDE += -I/Include
 
 .PHONY: all
 all: $(TARGET).bin
