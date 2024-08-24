@@ -54,7 +54,7 @@ OBJS += $(AS_SRC:.S=.o)
 OBJS += $(C_SRC:.c=.o)
 
 INCLUDE = -I./
-INCLUDE += -I/Include
+INCLUDE += -I/CMIS_core
 
 .PHONY: all
 all: $(TARGET).bin

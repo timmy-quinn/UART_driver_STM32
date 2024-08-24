@@ -1,6 +1,6 @@
 #include <stdint.h>
-#include "Include/system_stm32f4xx.h"
-#include "Include/stm32f4xx.h"
+#include "CMSIS_core/system_stm32f4xx.h"
+#include "CMSIS_core/stm32f4xx.h"
 
 // PA5 is the LED pin
 #define LED_PIN
