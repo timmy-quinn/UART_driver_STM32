@@ -18,7 +18,7 @@ void setLED(){
     GPIOA->MODER &= ~GPIO_MODER_MODER5_1; 
                                        //
     GPIOA->OTYPER |= ~GPIO_OTYPER_OT_5; // Set the output type to pull-up, pull down 
-}
+ }
 
 void toggle_LED() {
     GPIOA->ODR ^= GPIO_ODR_ODR_5;
