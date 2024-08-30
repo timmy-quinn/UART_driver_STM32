@@ -48,13 +48,14 @@ VECT_TBL = ./vector_table.S
 AS_SRC   = ./core.S
 
 C_SRC    = ./main.c
+C_SRC 	 += ./src/usart.c	
 
 OBJS =  $(VECT_TBL:.S=.o)
 OBJS += $(AS_SRC:.S=.o)
 OBJS += $(C_SRC:.c=.o)
 
 INCLUDE = -I./
-INCLUDE += -I/CMIS_core
+INCLUDE += -I/include/CMIS_core
 
 .PHONY: all
 all: $(TARGET).bin
@@ -64,8 +65,10 @@ all: $(TARGET).bin
 	$(CC) -c $(CFLAGS) $(INCLUDE) $< -o $@
 $(TARGET).elf: $(OBJS)
 	$(CC) $^ $(LFLAGS) -o $@
+
+# Object copy
 $(TARGET).bin: $(TARGET).elf
-	$(OC) -S -O binary $< $@ # Object copy 
+	$(OC) -S -O binary $< $@  
 	$(OS) $< 
 .PHONY: clean
 clean:
