@@ -1,5 +1,6 @@
 // USART Driver
 #include ".\..\include\CMSIS_core\stm32f4xx.h"
+#include ".\..\include\drivers\usart.h"
 
 // UART Transmitter Procedure:
 // 1.Enable the USART by writing the UE bit in USART_CR1 register to 1.
@@ -15,8 +16,21 @@
 // that the transmission of the last frame is complete. This is required for instance when
 // the USART is disabled or enters the Halt mode to avoid corrupting the last
 // transmission.
-void USART_transmit_enable(){
+void USART_enable(){
     USART1->CR1 |= USART_CR1_UE;
+    USART1->CR1 |= USART_CR1_M;
+    USART1->CR2 |= USART_CR2_STOP_0;
+    USART1->CR2 |= USART_CR2_STOP_1;
+    // USART1->CR3 |= USART_CR3
+    USART1->CR1 |= USART_CR1_TE;
+}
+
+void USART_transmit_byte(uint8_t* data, uint8_t length) {
+    for(uint8_t i = 0; i < length; i++) {
+       USART1->DR = *data; 
+    }
+    while((USART1->SR & USART_SR_TC) == 0){
+    }
 }
 
 // UART Receiver Procedure:

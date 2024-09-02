@@ -25,16 +25,22 @@ void toggle_LED() {
 }
 
 int main(void) {
-    uint32_t timer = 0;
-    setLED();
-    toggle_LED();
-    while(1){
-        // set GPIOA_ODR to output
-        if(timer == 10000000)
-        {
-            toggle_LED();
-            timer = 0;
-        }
-        timer++; 
+    uint8_t test_char = 'h';
+    USART_enable();
+
+    while(1) {
+        USART_transmit(&test_char, sizeof(test_char));
     }
+    // uint32_t timer = 0;
+    // setLED();
+    // toggle_LED();
+    // while(1){
+    //     // set GPIOA_ODR to output
+    //     if(timer == 10000000)
+    //     {
+    //         toggle_LED();
+    //         timer = 0;
+    //     }
+    //     timer++; 
+    // }
 }
