@@ -29,7 +29,7 @@ int main(void) {
     USART_enable();
 
     while(1) {
-        USART_transmit(&test_char, sizeof(test_char));
+        USART_transmit_byte(&test_char, sizeof(test_char));
     }
     // uint32_t timer = 0;
     // setLED();
