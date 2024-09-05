@@ -3,7 +3,7 @@ TARGET = main
 LD_SCRIPT = linker.ld
 MCU_SPEC  = cortex-m4
 
-BUILDDIR = ./build #TODO: Add build directory
+BUILDDIR = ./build/ #TODO: Add build directory
 
 # Toolchain definitions (ARM bare metal defaults)
 TOOLCHAIN = ~/toolchains
@@ -43,7 +43,7 @@ LFLAGS += -nostdlib
 LFLAGS += -lgcc
 LFLAGS += -T$(LSCRIPT)
 
-VECT_TBL = ./vector_table.S
+VECT_TBL =./vector_table.S
 
 AS_SRC   = ./core.S
 
@@ -59,10 +59,13 @@ INCLUDE += -I/include/CMIS_core
 
 .PHONY: all
 all: $(TARGET).bin
+
 %.o: %.S
 	$(CC) -x assembler-with-cpp $(ASFLAGS) $< -o $@
+
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(INCLUDE) $< -o $@
+
 $(TARGET).elf: $(OBJS)
 	$(CC) $^ $(LFLAGS) -o $@
 
@@ -70,7 +73,9 @@ $(TARGET).elf: $(OBJS)
 $(TARGET).bin: $(TARGET).elf
 	$(OC) -S -O binary $< $@  
 	$(OS) $< 
+
 .PHONY: clean
 clean:
 	rm -f $(OBJS)
 	rm -f $(TARGET).elf
+	rm -f $(TARGET).bin
