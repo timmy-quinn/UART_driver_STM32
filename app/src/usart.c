@@ -31,37 +31,46 @@
 // that the transmission of the last frame is complete. This is required for instance when
 // the USART is disabled or enters the Halt mode to avoid corrupting the last
 // transmission.
-void USART1_enable(){
+void USART1_enable(USART_TypeDef * USART){
+    // Move this to appropriate driver
     RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
 
 
-    USART1->CR1 |= USART_CR1_UE;
-    USART1->CR1 |= USART_CR1_M;
-    USART1->CR2 |= USART_CR2_STOP_0;
-    USART1->CR2 |= USART_CR2_STOP_1;
+    USART->CR1 |= USART_CR1_UE;
+    USART->CR1 |= USART_CR1_M;
+    USART->CR2 |= USART_CR2_STOP_0;
+    USART->CR2 |= USART_CR2_STOP_1;
     // USART1->CR3 |= USART_CR3
-    USART1->BRR = USARTDIV_19200; 
-    USART1->CR1 |= USART_CR1_TE;
+    USART->BRR = USARTDIV_19200; 
+    USART->CR1 |= USART_CR1_TE;
 }
 
-// Use PA2 and PA3 for rx and tx registers 
+// Using PA9 for TX and PA10 for RX, after checking the  
 //TODO: Move this to gpio driver or whatever
 void USART1_set_tx_pin() {
-
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
-
     // Set USART1_TX pin as alternate function mode
-    GPIOA->MODER &= ~GPIO_MODER_MODER2_0; // Set the gpio pin to alternate function
-    GPIOA->MODER |= GPIO_MODER_MODER2_1; 
-
-   GPIOA->OTYPER |= GPIO_OTYPER_2;
+    GPIOA->MODER &= ~GPIO_MODER_MODER9_0; // Set the gpio pin to alternate function
+    GPIOA->MODER |= GPIO_MODER_MODER9_1; // Set to alternate function mode 
+    GPIOA->OTYPER &= ~GPIO_OTYPER_OT_9;  // Set to push-pull output 
+    GPIOA->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR9; // Set speed to low
 }
 
-void USART_transmit_byte(uint8_t* data, uint8_t length) {
+void USART1_set_rx_pin() {
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+    // Set USART1_TX pin as alternate function mode
+    GPIOA->MODER &= ~GPIO_MODER_MODER10_0; // Set the gpio pin to alternate function
+    GPIOA->MODER |= GPIO_MODER_MODER10_1; // Set to alternate function mode 
+    GPIOA->OTYPER &= ~GPIO_OTYPER_OT_10;  // Set output to push-pull output NOTE: DOn't think this is necessary 
+    GPIOA->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR10; // Set speed to low
+}
+
+
+void USART_transmit_byte(uint8_t* data, uint8_t length, USART_TypeDef * USART) {
     for(uint8_t i = 0; i < length; i++) {
-       USART1->DR = *data; 
+       USART->DR = *data; 
     }
-    while((USART1->SR & USART_SR_TC) == 0){
+    while((USART->SR & USART_SR_TC) == 0){
     }
 }
 
