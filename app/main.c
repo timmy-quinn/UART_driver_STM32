@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include "include/CMSIS_core/system_stm32f4xx.h"
 #include "include/CMSIS_core/stm32f4xx.h"
+#include "include/drivers/usart.h"
 
 // PA5 is the LED pin
 #define LED_PIN
@@ -26,21 +27,9 @@ void toggle_LED() {
 
 int main(void) {
     uint8_t test_char = 'h';
-    USART_enable();
+    USART_enable(USART1);
 
     while(1) {
-        USART_transmit_byte(&test_char, sizeof(test_char));
+        USART_transmit_byte(&test_char, sizeof(test_char), USART1);
     }
-    // uint32_t timer = 0;
-    // setLED();
-    // toggle_LED();
-    // while(1){
-    //     // set GPIOA_ODR to output
-    //     if(timer == 10000000)
-    //     {
-    //         toggle_LED();
-    //         timer = 0;
-    //     }
-    //     timer++; 
-    // }
 }

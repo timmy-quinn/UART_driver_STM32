@@ -56,6 +56,7 @@ OBJS += $(C_SRC:.c=.o)
 
 INCLUDE = -I./
 INCLUDE += -I/include/CMIS_core
+INCLUDE += -I/include/drivers
 
 .PHONY: all
 all: $(TARGET).bin
