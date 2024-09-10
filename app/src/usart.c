@@ -1,6 +1,7 @@
 // USART Driver
 #include ".\..\include\CMSIS_core\stm32f4xx.h"
 #include ".\..\include\drivers\usart.h"
+#include ".\..\include\drivers\gpio.h"
 
 #define CLOCK_SPEED 8000000
 #define BAUD_RATE 19200
@@ -31,18 +32,21 @@
 // that the transmission of the last frame is complete. This is required for instance when
 // the USART is disabled or enters the Halt mode to avoid corrupting the last
 // transmission.
-void USART1_enable(USART_TypeDef * USART){
+void USART_enable(USART_TypeDef * USART){
     // Move this to appropriate driver
     RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
 
-
+    // USART->CR1 = 0;
     USART->CR1 |= USART_CR1_UE;
     USART->CR1 |= USART_CR1_M;
-    USART->CR2 |= USART_CR2_STOP_0;
-    USART->CR2 |= USART_CR2_STOP_1;
+
+    // Set USART to 0 stop bits
+    USART->CR2 &= ~USART_CR2_STOP_0;
+    USART->CR2 &= ~USART_CR2_STOP_1; 
     // USART1->CR3 |= USART_CR3
     USART->BRR = USARTDIV_19200; 
     USART->CR1 |= USART_CR1_TE;
+    USART->CR1 |= USART_CR1_RE;
 }
 
 // Using PA9 for TX and PA10 for RX, after checking the  
@@ -52,8 +56,13 @@ void USART1_set_tx_pin() {
     // Set USART1_TX pin as alternate function mode
     GPIOA->MODER &= ~GPIO_MODER_MODER9_0; // Set the gpio pin to alternate function
     GPIOA->MODER |= GPIO_MODER_MODER9_1; // Set to alternate function mode 
-    GPIOA->OTYPER &= ~GPIO_OTYPER_OT_9;  // Set to push-pull output 
+    // GPIOA->OTYPER |= GPIO_OTYPER_OT_9;  // Set to push-pull output 
+
     GPIOA->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR9; // Set speed to low
+    GPIOA->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR9_1; // Set speed to low
+
+    GPIOA->AFR[1] &= ~(0xF << (uint32_t)(((9 -8)) * 4));
+    GPIOA->AFR[1] |= (0x7 << (uint32_t)(((9 -8)) * 4));
 }
 
 void USART1_set_rx_pin() {
@@ -61,8 +70,12 @@ void USART1_set_rx_pin() {
     // Set USART1_TX pin as alternate function mode
     GPIOA->MODER &= ~GPIO_MODER_MODER10_0; // Set the gpio pin to alternate function
     GPIOA->MODER |= GPIO_MODER_MODER10_1; // Set to alternate function mode 
-    GPIOA->OTYPER &= ~GPIO_OTYPER_OT_10;  // Set output to push-pull output NOTE: DOn't think this is necessary 
+    // GPIOA->OTYPER |= GPIO_OTYPER_OT_10;  // Set output to push-pull output NOTE: DOn't think this is necessary 
     GPIOA->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR10; // Set speed to low
+    GPIOA->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR10_1; // Set speed to low
+
+    GPIOA->AFR[1] &= ~(0xF << (uint32_t)(((10 -8)) * 4));
+    GPIOA->AFR[1] |= (0x8 << (uint32_t)(((10 -8)) * 4));
 }
 
 
