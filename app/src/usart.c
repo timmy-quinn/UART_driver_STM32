@@ -16,7 +16,7 @@
  * div_fraction = 16 * 0d.041666666 = 0.66666 = 1
  * div_mantissa = 26 = 0x1A
 */
-#define USARTDIV_19200 0x01A1
+#define USARTDIV_19200 0x01A1 // This is somehow actually the baud rate generator for 38400. Maybe clock is actually 38400?
 
 // UART Transmitter Procedure:
 // 1.Enable the USART by writing the UE bit in USART_CR1 register to 1.
@@ -38,9 +38,9 @@ void USART_enable(USART_TypeDef * USART){
 
     // USART->CR1 = 0;
     USART->CR1 |= USART_CR1_UE;
-    USART->CR1 |= USART_CR1_M;
+    USART->CR1 &= ~USART_CR1_M; // Set data bits to 8
 
-    // Set USART to 0 stop bits
+    // Set USART to 1 stop bits
     USART->CR2 &= ~USART_CR2_STOP_0;
     USART->CR2 &= ~USART_CR2_STOP_1; 
     // USART1->CR3 |= USART_CR3
@@ -58,8 +58,10 @@ void USART1_set_tx_pin() {
     GPIOA->MODER |= GPIO_MODER_MODER9_1; // Set to alternate function mode 
     // GPIOA->OTYPER |= GPIO_OTYPER_OT_9;  // Set to push-pull output 
 
-    GPIOA->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR9; // Set speed to low
-    GPIOA->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR9_1; // Set speed to low
+    // GPIOA->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR9; // Set speed to low
+    // GPIOA->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR9_1; // Set speed to low
+    GPIOA->OSPEEDR |= GPIO_OSPEEDER_OSPEEDR9; // Set speed to low
+    GPIOA->OSPEEDR |= GPIO_OSPEEDER_OSPEEDR9_1; // Set speed to low
 
     GPIOA->AFR[1] &= ~(0xF << (uint32_t)(((9 -8)) * 4));
     GPIOA->AFR[1] |= (0x7 << (uint32_t)(((9 -8)) * 4));
@@ -71,8 +73,10 @@ void USART1_set_rx_pin() {
     GPIOA->MODER &= ~GPIO_MODER_MODER10_0; // Set the gpio pin to alternate function
     GPIOA->MODER |= GPIO_MODER_MODER10_1; // Set to alternate function mode 
     // GPIOA->OTYPER |= GPIO_OTYPER_OT_10;  // Set output to push-pull output NOTE: DOn't think this is necessary 
-    GPIOA->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR10; // Set speed to low
-    GPIOA->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR10_1; // Set speed to low
+    // GPIOA->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR10; // Set speed to low
+    // GPIOA->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR10_1; // Set speed to low
+    GPIOA->OSPEEDR |= GPIO_OSPEEDER_OSPEEDR10; 
+    GPIOA->OSPEEDR |= GPIO_OSPEEDER_OSPEEDR10_1; 
 
     GPIOA->AFR[1] &= ~(0xF << (uint32_t)(((10 -8)) * 4));
     GPIOA->AFR[1] |= (0x8 << (uint32_t)(((10 -8)) * 4));
