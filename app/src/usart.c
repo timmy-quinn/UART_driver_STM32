@@ -2,6 +2,7 @@
 #include ".\..\include\CMSIS_core\stm32f4xx.h"
 #include ".\..\include\drivers\usart.h"
 #include ".\..\include\drivers\gpio.h"
+#include <stdbool.h>
 
 #define CLOCK_SPEED 8000000
 #define BAUD_RATE 19200
@@ -49,48 +50,35 @@ void USART_enable(USART_TypeDef * USART){
     USART->CR1 |= USART_CR1_RE;
 }
 
+
 // Using PA9 for TX and PA10 for RX, after checking the  
 //TODO: Move this to gpio driver or whatever
-void USART1_set_tx_pin() {
-    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+void USART_set_pin(GPIO_TypeDef * GPIO, uint8_t usart_pin) {
     // Set USART1_TX pin as alternate function mode
-    GPIOA->MODER &= ~GPIO_MODER_MODER9_0; // Set the gpio pin to alternate function
-    GPIOA->MODER |= GPIO_MODER_MODER9_1; // Set to alternate function mode 
-    // GPIOA->OTYPER |= GPIO_OTYPER_OT_9;  // Set to push-pull output 
+    GPIO->MODER &= ~(MODER_PIN_MASK << (usart_pin * MODER_BITS_PER_PIN));
+    GPIO->MODER |= (MODER_AF << (usart_pin * MODER_BITS_PER_PIN)); 
 
-    // GPIOA->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR9; // Set speed to low
-    // GPIOA->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR9_1; // Set speed to low
-    GPIOA->OSPEEDR |= GPIO_OSPEEDER_OSPEEDR9; // Set speed to low
-    GPIOA->OSPEEDR |= GPIO_OSPEEDER_OSPEEDR9_1; // Set speed to low
+    GPIO->OSPEEDR &= ~(OSPEEDR_PIN_MASK << (usart_pin * OSPEEDR_BITS_PER_PIN));
+    GPIO->OSPEEDR |= (OSPEEDR_HIGH_SPEED << (usart_pin * OSPEEDR_BITS_PER_PIN));
 
-    GPIOA->AFR[1] &= ~(0xF << (uint32_t)(((9 -8)) * 4));
-    GPIOA->AFR[1] |= (0x7 << (uint32_t)(((9 -8)) * 4));
-}
-
-void USART1_set_rx_pin() {
-    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
-    // Set USART1_TX pin as alternate function mode
-    GPIOA->MODER &= ~GPIO_MODER_MODER10_0; // Set the gpio pin to alternate function
-    GPIOA->MODER |= GPIO_MODER_MODER10_1; // Set to alternate function mode 
-    // GPIOA->OTYPER |= GPIO_OTYPER_OT_10;  // Set output to push-pull output NOTE: DOn't think this is necessary 
-    // GPIOA->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR10; // Set speed to low
-    // GPIOA->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR10_1; // Set speed to low
-    GPIOA->OSPEEDR |= GPIO_OSPEEDER_OSPEEDR10; 
-    GPIOA->OSPEEDR |= GPIO_OSPEEDER_OSPEEDR10_1; 
-
-    GPIOA->AFR[1] &= ~(0xF << (uint32_t)(((10 -8)) * 4));
-    GPIOA->AFR[1] |= (0x8 << (uint32_t)(((10 -8)) * 4));
+    uint8_t afrIndex = (AFR_BITS_PER_PIN * usart_pin)/32;
+    GPIO->AFR[afrIndex] &= ~(AFR_PIN_MASK << ((usart_pin - afrIndex * 8) * AFR_BITS_PER_PIN));
+    GPIO->AFR[afrIndex] |= (AF7 << ((usart_pin - afrIndex * 8) * AFR_BITS_PER_PIN));
 }
 
 
 void USART_transmit_byte(uint8_t* data, uint8_t length, USART_TypeDef * USART) {
     for(uint8_t i = 0; i < length; i++) {
        USART->DR = *data; 
-    }
-    while((USART->SR & USART_SR_TC) == 0){
+        while((USART->SR & USART_SR_TC) == 0){
+        }
     }
 }
 
+
+bool USART_is_received() {
+    if()
+}
 // UART Receiver Procedure:
 // 1.Enable the USART by writing the UE bit in USART_CR1 register to 1.
 // 2.Program the M bit in USART_CR1 to define the word length.
