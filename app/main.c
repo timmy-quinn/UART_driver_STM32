@@ -47,6 +47,21 @@ void test_transmit() {
     }
 }
 
+void test_is_received() {
+    uint8_t received_char = 'r';
+    uint8_t echo_char = ' ';
+    uint8_t newline = '\n';
+    while(1) {
+        if (USART_is_received(USART1))
+        {
+            // USART_transmit_byte(&received_char, sizeof(received_char), USART1);
+            echo_char = USART_read_byte(USART1);
+            USART_transmit_byte(&echo_char, sizeof(echo_char), USART1);
+            uSART_transmit_byte(&received_char, sizeof(received_char), USART1);
+            USART_transmit_byte(&newline, sizeof(newline), USART1);
+        }
+    }
+}
 int main(void) {
     set_clock();
 
@@ -58,5 +73,6 @@ int main(void) {
     USART_set_pin(GPIOA, 10);
     // USART_set_rx_pin(GPIOA, 10);
 
-    test_transmit();
+    // test_transmit();
+    test_is_received();
 }

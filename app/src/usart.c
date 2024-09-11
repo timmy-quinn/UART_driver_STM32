@@ -76,8 +76,14 @@ void USART_transmit_byte(uint8_t* data, uint8_t length, USART_TypeDef * USART) {
 }
 
 
-bool USART_is_received() {
-    if()
+bool USART_is_received(USART_TypeDef *USART) {
+    if(USART-> SR & USART_SR_RXNE) {
+        return true;
+    }
+}
+
+uint8_t USART_read_byte(USART_TypeDef *USART) { 
+    return (uint8_t)USART->DR;
 }
 // UART Receiver Procedure:
 // 1.Enable the USART by writing the UE bit in USART_CR1 register to 1.
