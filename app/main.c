@@ -7,10 +7,6 @@
 // PA5 is the LED pin
 #define LED_PIN
  
-// Each IO pin has four configuration registers.
-// GPIOx_MODER, GPIOx_OTYPER, GPIOx_OSPEEDR and GPIOs_PUDR
-// Two data register GPIOx_IDR and GPIOx_ODR: which store either output data or input data
-// Two 32 bit alternate function selection registers GPIOx_AFRH and GPIOx_AFRL 
 
 void setLED(){
     // SET GPIOAEN to 1
@@ -19,17 +15,10 @@ void setLED(){
     GPIOA->MODER |= GPIO_MODER_MODER5_0; // Set the gpio pin to output
     GPIOA->MODER &= ~GPIO_MODER_MODER5_1; 
     GPIOA->OTYPER |= ~GPIO_OTYPER_OT_5; // Set the output type to pull-up, pull down 
-
-    // GPIOA->MODER |= GPIO_MODER_MODER9_0; // Set the gpio pin to output
-    // GPIOA->MODER &= ~GPIO_MODER_MODER9_1; 
-    //                                    //
-    // GPIOA->OTYPER |= ~GPIO_OTYPER_OT_9; // Set the output type to pull-up, pull down 
  }
 
 void toggle_LED() {
     GPIOA->ODR ^= GPIO_ODR_ODR_5;
-
-    // GPIOA->ODR ^= GPIO_ODR_ODR_9;
 }
 
 void test_transmit() {
@@ -47,7 +36,18 @@ void test_transmit() {
     }
 }
 
-void test_is_received() {
+void test_transmit_multi_byte() {
+
+    uint8_t test_string[3] = "12";
+    while(1) {
+        for(uint32_t i = 0; i < 8000000/100; i++) {}
+        
+        USART_transmit_byte(&(test_string[0]), 2, USART1); 
+    }
+}
+
+
+void echo() {
     uint8_t received_char = 'r';
     uint8_t echo_char = ' ';
     uint8_t newline = '\n';
@@ -57,11 +57,13 @@ void test_is_received() {
             // USART_transmit_byte(&received_char, sizeof(received_char), USART1);
             echo_char = USART_read_byte(USART1);
             USART_transmit_byte(&echo_char, sizeof(echo_char), USART1);
-            uSART_transmit_byte(&received_char, sizeof(received_char), USART1);
+            USART_transmit_byte(&received_char, sizeof(received_char), USART1);
             USART_transmit_byte(&newline, sizeof(newline), USART1);
         }
     }
 }
+
+
 int main(void) {
     set_clock();
 
@@ -71,8 +73,7 @@ int main(void) {
     USART_enable(USART1);
     USART_set_pin(GPIOA, 9);
     USART_set_pin(GPIOA, 10);
-    // USART_set_rx_pin(GPIOA, 10);
 
-    // test_transmit();
-    test_is_received();
+    test_transmit_multi_byte();
+    // echo();
 }
