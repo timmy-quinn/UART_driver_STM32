@@ -1,8 +1,8 @@
 #include <stdint.h>
-#include "include/CMSIS_core/system_stm32f4xx.h"
-#include "include/CMSIS_core/stm32f4xx.h"
-#include "include/drivers/usart.h"
-#include "include/drivers/rcc.h"
+#include "CMSIS_core/system_stm32f4xx.h"
+#include "CMSIS_core/stm32f4xx.h"
+#include "drivers/usart.h"
+#include "drivers/rcc.h"
 
 // PA5 is the LED pin
 #define LED_PIN

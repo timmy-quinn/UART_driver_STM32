@@ -1,5 +1,5 @@
-#include "../include/CMSIS_core/stm32f4xx.h"
-#include "../include/drivers/rcc.h"
+#include "../CMSIS_core/stm32f4xx.h"
+#include "rcc.h"
 
 void set_clock() {
     RCC->CR |=  ( RCC_CR_HSION );

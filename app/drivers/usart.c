@@ -1,7 +1,7 @@
 // USART Driver
-#include ".\..\include\CMSIS_core\stm32f4xx.h"
-#include ".\..\include\drivers\usart.h"
-#include ".\..\include\drivers\gpio.h"
+#include ".\..\CMSIS_core\stm32f4xx.h"
+#include "usart.h"
+#include "gpio.h"
 #include <stdbool.h>
 
 void USART_enable(USART_TypeDef * USART){
