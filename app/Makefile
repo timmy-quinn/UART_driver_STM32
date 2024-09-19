@@ -3,7 +3,7 @@ LD_SCRIPT = linker.ld
 MCU_SPEC  = cortex-m4
 
 BUILDDIR = build
-TARGET = main
+TARGET = $(BUILDDIR)/main
 
 
 # Toolchain definitions (ARM bare metal defaults)
@@ -44,58 +44,56 @@ LFLAGS += -nostdlib
 LFLAGS += -lgcc
 LFLAGS += -T$(LSCRIPT)
 
-VECT_TBL =vector_table.S
+AS_SRC   =core.S
+AS_SRC 	 +=vector_table.S
 
-AS_SRC   = core.S
+C_SRC   =main.c
+C_SRC	+=drivers/usart.c	
+C_SRC 	+=drivers/rcc.c
 
-C_SRC   = main.c
-C_SRC	+= drivers/usart.c	
-C_SRC 	+= drivers/rcc.c
-
-# OBJS =  build/asm/$(VECT_TBL:.S=.o)
-# OBJS += build/asm/$(AS_SRC:.S=.o)
-# OBJS += build/c/$(C_SRC:.c=.o)
 
 # Correctly define object files by applying the directory prefix and substitution
-OBJS = $(addprefix build/asm/, $(notdir $(VECT_TBL:.S=.o)))
-OBJS += $(addprefix build/asm/, $(notdir $(AS_SRC:.S=.o)))
-OBJS += $(addprefix build/c/, $(notdir $(C_SRC:.c=.o)))
+OBJS += $(patsubst %.S, $(BUILDDIR)/%.o, $(AS_SRC))
+OBJS += $(patsubst %.c, $(BUILDDIR)/%.o, $(C_SRC))
+
+OBJDIRS = $(sort $(dir $(OBJS)))
+
 
 INCLUDE = -I./
 INCLUDE += -I/CMIS_core
 INCLUDE += -I/drivers
 
 
-#.PHONY: $(BUILDDIR)
-
-#$(BUILDDIR)/asm:
-#	mkdir -p $(BUILDDIR)/asm
-
-#$(BUILDDIR)/c:
-#	mkdir -p $(BUILDDIR)/c
-
-
 .PHONY: all
-all: build/$(TARGET).bin | $(BUILDDIR)
+all: $(BUILDDIR) | $(TARGET).bin 
 
-build/asm/%.o: %.S 
-	mkdir -p ./$(BUILDDIR)/asm
+$(BUILDDIR)/%.o: %.S 
 	$(CC) -x assembler-with-cpp $(ASFLAGS) $< -o $@
 
-build/c/%.o: %.c 
-	mkdir -p ./$(BUILDDIR)/c
+$(BUILDDIR)/%.o: %.c 
 	$(CC) -c $(CFLAGS) $(INCLUDE) $< -o $@
 
-build/$(TARGET).elf: $(OBJS)
+$(TARGET).elf: $(OBJS)
 	$(CC) $^ $(LFLAGS) -o $@
 
 # Object copy
-build/$(TARGET).bin: build/$(TARGET).elf
+$(TARGET).bin: $(TARGET).elf
 	$(OC) -S -O binary $< $@  
 	$(OS) $< 
 
 
 .PHONY: $(BUILDDIR)
+$(BUILDDIR): $(OBJDIRS)
+
+$(OBJDIRS): 
+	mkdir -p $@
+
+
+.PHONY: ec
+ec: 
+	echo $(OBJS)
+	echo $(OBJDIRS)
+
 
 .PHONY: clean
 clean:
