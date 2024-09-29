@@ -1,5 +1,5 @@
 # UART Driver  
-This project was largely an excersise in stubborness. If you're like me and want to forgo the immense convenience of IDE's and SDK's you're in the right place. Hopefully this project can serve as a helpful example, in addition to the resources linked below, all of which were immensely helpful throughout the course of the project, especially in writing the linker scripts and startup code.  
+This project was largely an excersise in stubborness. If you're like me and want to forgo the immense convenience of IDE's and SDK's you're in the right place. Hopefully this project can serve as a helpful example, in addition to the resources linked below, all of which were immensely helpful throughout the course of the project, especially in writing the linker scripts and startup code. This project implements a simple USART driver for an STM32f466RE.  
    
 Despite the amount of time it took compared to doing the same thing with an SDK, I found writing code for an MCU completely from scratch to be incredibly educational. It taught me things I would never have otherwise learned about the fundamentals of processor and peripheral hardware and I recommend all embedded  engineers try this at least once.  
   
