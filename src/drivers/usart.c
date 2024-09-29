@@ -12,7 +12,7 @@ void USART_enable(USART_TypeDef * USART){
     USART->CR2 &= ~USART_CR2_STOP_0; // Set USART stop bits 
     USART->CR2 &= ~USART_CR2_STOP_1; 
 
-    USART->BRR = USARTDIV_38400; // Set baud rate 
+    USART->BRR = BAUD_RATE_16MHZ_38400; // Set baud rate 
     USART->CR1 |= USART_CR1_TE; // Set transmit enable
     USART->CR1 |= USART_CR1_RE; // Set receive enable
 }

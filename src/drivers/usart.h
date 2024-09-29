@@ -1,7 +1,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define USARTDIV_38400 0x01A1 
+
+#define BAUD_RATE_16MHZ_9600 0x683
+#define BAUD_RATE_16MHZ_19200 0x341
+#define BAUD_RATE_16MHZ_38400 0x1a1
+#define BAUD_RATE_16MHZ_57600 0x116
+#define BAUD_RATE_16MHZ_115200 0x8b
 #define USART_STOP_BIT_MASK            (USART_CR2_STOP_1 | USART_CR2_STOP_0)  
 #define HALF_STOP_BIT                      USART_CR2_STOP_0
 #define TWO_STOP_BIT                       USART_CR2_STOP_1
