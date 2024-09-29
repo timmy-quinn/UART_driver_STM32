@@ -28,7 +28,7 @@ arm-none-eabi-gdb build/main.elf
 (gdb) target extended-remote :4242  
 (gdb) load  
 ``` 
-
+From here you can simply debug using [gdb](https://ftp.gnu.org/old-gnu/Manuals/gdb/html_chapter/gdb_toc.html). 
 
 
 ### Resources
